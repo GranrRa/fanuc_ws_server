@@ -1,7 +1,14 @@
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
+
 const io = require("socket.io")(server);
+    {
+        cors:{
+            origin:"*"
+        }
+    });
+
 const axios = require("axios");
 
 const PORT = process.env.PORT || 3000;
@@ -49,8 +56,5 @@ const main_loop = () => {
 };
 
 main_loop();
-console.log("Listening Port: " + PORT);
-
-
 server.listen(PORT);
 console.log("Listening port: " + PORT);
