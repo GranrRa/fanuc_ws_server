@@ -3,11 +3,12 @@ const app = express();
 const server = require("http").createServer(app);
 
 const io = require("socket.io")(server,
-    {
-        cors:{
-            origin:"*"
-        }
-    });
+  {
+    cors:{
+      origin:"*"
+    }
+  });
+
 
 const axios = require("axios");
 
@@ -16,15 +17,14 @@ const PORT = process.env.PORT || 3000;
 let connections = [];
 io.on("connection", (socket)=>{
     connections[socket.id] = socket;
-
+    console.log("connected");
     socket.on("disconnect", (socket)=>{
-        delete connections [socket.id];
+        delete connections[socket.id];
     });
 });
 
 const broadcast_joint_values = (joint_values)=>{
     for(let id in connections){
-        console.log(id);
         const connection = connections[id];
         connection.emit("joint_values", joint_values);
     }
@@ -50,7 +50,7 @@ const get_joint_values = () => {
 
 const main_loop = () => {
   get_joint_values().then((joint_values) => {
-    console.log(joint_values);
+    broadcast_joint_values(joint_values);
     main_loop();
   });
 };
